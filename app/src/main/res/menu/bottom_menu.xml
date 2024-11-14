@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_board"
+        android:enabled="true"
+        android:icon="@drawable/board_vector"
+        android:title="게시물"/>
+    <item
+        android:id="@+id/menu_shorts"
+        android:enabled="true"
+        android:icon="@drawable/shorts_vector"
+        android:title="shorts"/>
+    <item
+        android:id="@+id/menu_attendance"
+        android:enabled="true"
+        android:icon="@drawable/attendance_vector"
+        android:title="출결"/>
+
+</menu>
