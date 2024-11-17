@@ -1,6 +1,10 @@
 package com.example.checkmate;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -51,10 +56,35 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.calend
         return dayList.size();
     }
 
+    private void drawAttendanceCircle(LinearLayout layout) {
+        Context context = layout.getContext();
+        LayerDrawable layerDrawable = (LayerDrawable) ContextCompat.getDrawable(context, R.drawable.circle);
+        GradientDrawable backgroundLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circle);
+        GradientDrawable borderLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circleBorder);
+        backgroundLayer.setColor(Color.parseColor("#7BCDF2"));
+        borderLayer.setStroke(1, Color.parseColor("#7BCDF2"));
+
+        TextView textView = layout.findViewById(R.id.attendanceCircleText);
+        textView.setText("출석");
+    }
+
+    private void drawAbsenceCircle(LinearLayout layout) {
+        Context context = layout.getContext();
+        LayerDrawable layerDrawable = (LayerDrawable) ContextCompat.getDrawable(context, R.drawable.circle);
+        GradientDrawable backgroundLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circle);
+        GradientDrawable borderLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circleBorder);
+        backgroundLayer.setColor(Color.parseColor("#999999"));
+        borderLayer.setStroke(1, Color.parseColor("#999999"));
+
+        TextView textView = layout.findViewById(R.id.attendanceCircleText);
+        textView.setText("결석");
+    }
+
     class calendarViewHolder extends RecyclerView.ViewHolder {
 
         TextView dayText;
         LinearLayout attendCircle;
+
 
         public calendarViewHolder(@NonNull View itemView) {
             super(itemView);

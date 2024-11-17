@@ -49,7 +49,7 @@ public class AttendanceActivity extends Fragment {
 
     private void setYearAndMonth() {
         TextView monthView = view.findViewById(R.id.calendarMonth);
-        monthView.setText(now.getMonthValue() + "월");
+        monthView.setText(now.getYear() + "년 " + now.getMonthValue() + "월");
     }
 
     private void setDay() {
