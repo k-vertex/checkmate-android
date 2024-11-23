@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CheckMate</string>
+    <string name="servicedesc">APDU 서비스</string>
+    <string name="aiddescription">aid 정보</string>
 </resources>
