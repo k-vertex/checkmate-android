@@ -15,14 +15,19 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.checkmate.attend.Attendance;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.calendarViewHolder> {
 
     private List<String> dayList;
+    private HashMap<Integer, Boolean> attendanceMap;
 
-    public CalendarAdapter(List<String> dayList) {
+    public CalendarAdapter(List<String> dayList, HashMap<Integer, Boolean> attendanceMap) {
         this.dayList = dayList;
+        this.attendanceMap = attendanceMap;
     }
 
     @NonNull
@@ -45,6 +50,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.calend
             ViewGroup parent = (ViewGroup) holder.attendCircle.getParent();
             parent.removeView(holder.attendCircle);
         }
+        else {
+            int dayInt = Integer.parseInt(day);
+            if(attendanceMap.containsKey(dayInt)) {
+                System.out.println(dayInt);
+                if (attendanceMap.get(dayInt))
+                    holder.drawAttendanceCircle();
+                else
+                    holder.drawAbsenceCircle();
+            }
+        }
         if(position % 7 == 6)
             holder.dayText.setTextColor(Color.parseColor("#0000DB"));
         else if(position % 7 == 0)
@@ -56,41 +71,42 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.calend
         return dayList.size();
     }
 
-    private void drawAttendanceCircle(LinearLayout layout) {
-        Context context = layout.getContext();
-        LayerDrawable layerDrawable = (LayerDrawable) ContextCompat.getDrawable(context, R.drawable.circle);
-        GradientDrawable backgroundLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circle);
-        GradientDrawable borderLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circleBorder);
-        backgroundLayer.setColor(Color.parseColor("#7BCDF2"));
-        borderLayer.setStroke(1, Color.parseColor("#7BCDF2"));
-
-        TextView textView = layout.findViewById(R.id.attendanceCircleText);
-        textView.setText("출석");
-    }
-
-    private void drawAbsenceCircle(LinearLayout layout) {
-        Context context = layout.getContext();
-        LayerDrawable layerDrawable = (LayerDrawable) ContextCompat.getDrawable(context, R.drawable.circle);
-        GradientDrawable backgroundLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circle);
-        GradientDrawable borderLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circleBorder);
-        backgroundLayer.setColor(Color.parseColor("#999999"));
-        borderLayer.setStroke(1, Color.parseColor("#999999"));
-
-        TextView textView = layout.findViewById(R.id.attendanceCircleText);
-        textView.setText("결석");
-    }
-
     class calendarViewHolder extends RecyclerView.ViewHolder {
 
         TextView dayText;
         LinearLayout attendCircle;
-
 
         public calendarViewHolder(@NonNull View itemView) {
             super(itemView);
 
             dayText = itemView.findViewById(R.id.dayText);
             attendCircle = itemView.findViewById(R.id.attendCircle);
+        }
+
+        public void drawAttendanceCircle() {
+            Context context = attendCircle.getContext();
+            LayerDrawable layerDrawable = (LayerDrawable) ContextCompat.getDrawable(context, R.drawable.circle).mutate();
+            GradientDrawable backgroundLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circle);
+            GradientDrawable borderLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circleBorder);
+            backgroundLayer.setColor(Color.parseColor("#7BCDF2"));
+            borderLayer.setStroke(1, Color.parseColor("#7BCDF2"));
+            attendCircle.setBackground(layerDrawable);
+
+            TextView textView = attendCircle.findViewById(R.id.attendanceCircleText);
+            textView.setText("출석");
+        }
+
+        public void drawAbsenceCircle() {
+            Context context = attendCircle.getContext();
+            LayerDrawable layerDrawable = (LayerDrawable) ContextCompat.getDrawable(context, R.drawable.circle).mutate();
+            GradientDrawable backgroundLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circle);
+            GradientDrawable borderLayer = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.circleBorder);
+            backgroundLayer.setColor(Color.parseColor("#999999"));
+            borderLayer.setStroke(1, Color.parseColor("#999999"));
+            attendCircle.setBackground(layerDrawable);
+
+            TextView textView = attendCircle.findViewById(R.id.attendanceCircleText);
+            textView.setText("결석");
         }
     }
 }

@@ -13,10 +13,23 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.checkmate.attend.Attendance;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 public class AttendanceActivity extends Fragment {
     private View view;
@@ -53,12 +66,42 @@ public class AttendanceActivity extends Fragment {
     }
 
     private void setDay() {
-        List<String> dayList = daysInMonthArray(now);
-        CalendarAdapter adapter = new CalendarAdapter(dayList);
-        RecyclerView.LayoutManager manager = new GridLayoutManager(getActivity().getApplicationContext(), 7);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://emperorchang.store:8888/attend";
+        RequestParams params = new RequestParams();
+        params.put("studentID", "1");
+        params.put("year", now.getYear());
+        params.put("month", now.getMonthValue());
+
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                HashMap<Integer, Boolean> attendanceMap = new HashMap<Integer, Boolean>();
+                for(int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject object = response.getJSONObject(i);
+                        String dateString = object.getString("date");
+                        boolean checked = object.getInt("checked") == 1;
+                        LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                        int day = date.getDayOfMonth();
+                        attendanceMap.put(day, checked);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                List<String> dayList = daysInMonthArray(now);
+                CalendarAdapter adapter = new CalendarAdapter(dayList, attendanceMap);
+                RecyclerView.LayoutManager manager = new GridLayoutManager(getActivity().getApplicationContext(), 7);
+                RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+                recyclerView.setLayoutManager(manager);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+            }
+        });
     }
 
     private List<String> daysInMonthArray(LocalDate date) {
