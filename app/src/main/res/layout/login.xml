@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="#3B383E">
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="300dp"-->
+<!--        android:layout_height="450dp"-->
+<!--        android:background="#3B383E"-->
+<!--        android:orientation="vertical"-->
+<!--        android:gravity="center">-->
+
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="0dp"
+            android:layout_gravity="center"
+            android:src="@drawable/checkmate_icon"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="#EAEAEA"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:layout_gravity="center"
+                android:background="#EAEAEA"
+                android:src="@drawable/person_vector"/>
+            <EditText
+                android:id="@+id/input_id"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="#BDBDBD"
+                android:padding="10dp"
+                android:hint="ID"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="#EAEAEA"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:layout_gravity="center"
+                android:background="#EAEAEA"
+                android:src="@drawable/lock_vector"/>
+            <EditText
+                android:id="@+id/input_password"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="#BDBDBD"
+                android:padding="10dp"
+                android:hint="Password"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/singup_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sing Up"
+                android:textColor="#BDBDBD"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot Password?"
+                android:textColor="#BDBDBD"/>
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:checkedButton="@id/radio_button_student">
+
+            <RadioButton
+                android:id="@+id/radio_button_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="학생"
+                android:textColor="#EAEAEA"/>
+            <RadioButton
+                android:id="@+id/radio_button_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="학부모"
+                android:textColor="#EAEAEA"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"/>
+            <RadioButton
+                android:id="@+id/radio_button_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="관계자"
+                android:textColor="#EAEAEA"/>
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#212121"
+            android:text="LOGIN"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+<!--    </LinearLayout>-->
+
+</LinearLayout>
