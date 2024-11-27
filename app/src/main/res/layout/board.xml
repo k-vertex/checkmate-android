@@ -31,6 +31,12 @@
                 android:layout_height="45dp"
                 android:src="@drawable/search_vector"
                 android:layout_gravity="center"/>
+            <ImageView
+                android:id="@+id/write_image"
+                android:layout_width="90dp"
+                android:layout_height="45dp"
+                android:src="@drawable/pencil_vector"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
         <LinearLayout

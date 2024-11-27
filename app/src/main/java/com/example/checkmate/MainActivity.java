@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLoggedIn() {
         SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-
-        return sharedPref.getBoolean("login", false);
+        return false;
+//        return sharedPref.getBoolean("login", false);
     }
 }

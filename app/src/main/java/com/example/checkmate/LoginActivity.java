@@ -63,18 +63,19 @@ public class LoginActivity extends AppCompatActivity {
             AsyncHttpClient client = new AsyncHttpClient();
             String url = "http://emperorchang.store:8888";
             RequestParams params = new RequestParams();
-            params.put("id", idEditText.getText());
-            params.put("password", passwordEditText.getText());
+            params.put("id", idEditText.getText().toString());
+            params.put("password", passwordEditText.getText().toString());
             params.put("userType", userType);
 
             client.post(url, params, new JsonHttpResponseHandler() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     try {
-                        int fid = response.getInt("fid");
-                        String deviceToken = response.getString("device_token");
+                        JSONObject object = response.getJSONObject(0);
+                        int fid = object.getInt("fid");
+                        String deviceToken = object.getString("device_token");
                         editor.putBoolean("login", true);
                         editor.putInt("familyID", fid);
                         if(deviceToken != null)
