@@ -42,8 +42,17 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-messaging")
+//    implementation("androidx.media3:media3-ui:1.5.0")
 //    implementation("com.android.support.design:28.0.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    implementation("com.google.android.exoplayer:exoplayer-core:2.18.7")
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.18.7")
+    implementation("com.google.android.exoplayer:exoplayer-dash:2.18.7")
+    implementation("com.google.android.exoplayer:exoplayer-hls:2.18.7")
+    implementation ("com.google.android.exoplayer:exoplayer-rtsp:2.18.7")
+
+    // 전체 ExoPlayer 라이브러리 (위의 모든 컴포넌트 포함)
+    // implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
 }

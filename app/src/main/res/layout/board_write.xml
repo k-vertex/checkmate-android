@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+<!--    android:background="#3B383E">-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,6 +12,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/close_write_board"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -24,6 +26,7 @@
             android:textSize="20sp"
             android:gravity="center"/>
         <TextView
+            android:id="@+id/upload_board"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -41,6 +44,7 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/write_board_title"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -48,12 +52,14 @@
             android:hint="제목"
             android:textSize="22sp"/>
         <ImageView
+            android:id="@+id/add_video"
             android:layout_width="50dp"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:src="@drawable/add_vector"
             android:layout_gravity="right"/>
         <EditText
+            android:id="@+id/write_board_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9"
