@@ -70,6 +70,7 @@
                 android:layout_weight="5"
                 android:background="#BDBDBD"
                 android:padding="10dp"
+                android:inputType="textPassword"
                 android:hint="Password"/>
         </LinearLayout>
 

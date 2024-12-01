@@ -1,5 +1,7 @@
 package com.example.checkmate;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +71,8 @@ public class AttendanceActivity extends Fragment {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://emperorchang.store:8888/attend";
         RequestParams params = new RequestParams();
-        params.put("studentID", "1");
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        params.put("studentID", sharedPref.getInt("userID", -1));
         params.put("year", now.getYear());
         params.put("month", now.getMonthValue());
 

@@ -1,5 +1,7 @@
 package com.example.checkmate;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,8 +17,8 @@ public class MyHostApduService extends HostApduService {
     @Override
     public byte[] processCommandApdu(byte[] bytes, Bundle bundle) {
         Log.d("HCE", "Received APDU: " + ByteArrayToHexString(bytes));
-        Log.d("Token", MainActivity.token);
-        return MainActivity.token.getBytes();
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        return  sharedPref.getString("deviceToken", "null").getBytes();
     }
 
     @Override

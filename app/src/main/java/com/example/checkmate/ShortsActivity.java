@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -17,12 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentFactory;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.util.EventLogger;
 
 public class ShortsActivity extends Fragment {
 
@@ -64,19 +63,34 @@ public class ShortsActivity extends Fragment {
 //        videoView.requestFocus();
 //
 //        videoView.start();
-        ExoPlayer player = new ExoPlayer.Builder(getContext()).build();
-        PlayerView playerView = view.findViewById(R.id.videoView);
-        playerView.setPlayer(player);
-        player.addAnalyticsListener(new EventLogger());
-
         // 비디오 URL 설정
         String videoUrl = "http://www.emperorchang.store:8888/video";
-        MediaItem mediaItem = MediaItem.fromUri(videoUrl);
-        player.setMediaItem(mediaItem);
+        WebView webView = view.findViewById(R.id.videoView);
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(videoUrl);
+//        String outputPath = "변환된_비디오_저장_경로";
+//        String ffmpegCommand = String.format("-i %s -c:v libx264 -preset ultrafast -crf 23 -c:a aac -b:a 128k %s", videoUrl, outputPath);
+//        FFmpegKit.executeAsync(ffmpegCommand, session -> {
+//            if (ReturnCode.isSuccess(session.getReturnCode())) {
+//                ExoPlayer player = new ExoPlayer.Builder(getContext()).build();
+//                PlayerView playerView = view.findViewById(R.id.videoView);
+//                playerView.setPlayer(player);
+//                player.addAnalyticsListener(new EventLogger());
+//
+//                MediaItem mediaItem = MediaItem.fromUri(outputPath);
+//                player.setMediaItem(mediaItem);
+//
+//                player.setPlayWhenReady(true);
+//                player.seekTo(0, 0);
+//                player.prepare();
+//                player.play();
+//
+//            } else {
+//                // 변환 실패 처리
+//            }
+//        });
 
-        player.setPlayWhenReady(true);
-        player.seekTo(0, 0);
-        player.prepare();
         return view;
     }
 

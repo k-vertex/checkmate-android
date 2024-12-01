@@ -4,16 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -60,39 +66,15 @@ public class LoginActivity extends AppCompatActivity {
                 userType = "학부모";
             else
                 userType = "학생";
-            AsyncHttpClient client = new AsyncHttpClient();
-            String url = "http://emperorchang.store:8888";
-            RequestParams params = new RequestParams();
-            params.put("id", idEditText.getText().toString());
-            params.put("password", passwordEditText.getText().toString());
-            params.put("userType", userType);
-
-            client.post(url, params, new JsonHttpResponseHandler() {
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    try {
-                        JSONObject object = response.getJSONObject(0);
-                        int fid = object.getInt("fid");
-                        String deviceToken = object.getString("device_token");
-                        editor.putBoolean("login", true);
-                        editor.putInt("familyID", fid);
-                        if(deviceToken != null)
-                            editor.putString("deviceToken", deviceToken);
-                        editor.apply();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                public void onComplete(@NonNull Task<String> task) {
+                    if (!task.isSuccessful()) {
+                        Log.w("0", "Fetching FCM registration token failed", task.getException());
+                        return;
                     }
-                    catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                    String token = task.getResult();
+                    requestLogin(idEditText.getText().toString(), passwordEditText.getText().toString(), userType, token);
                 }
             });
         });
@@ -102,6 +84,54 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
             finish();
+        });
+    }
+
+    private void requestLogin(String id, String password, String userType, String fcmToken) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://emperorchang.store:8888";
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        params.put("password", password);
+        params.put("userType", userType);
+        params.put("fcmToken", fcmToken);
+
+        client.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                try {
+                    JSONObject object = response.getJSONObject(0);
+                    int fid = object.getInt("fid");
+                    editor.putBoolean("login", true);
+                    editor.putInt("familyID", fid);
+                    if(!object.isNull("device_token")) {
+                        String deviceToken = object.getString("device_token");
+                        if(deviceToken != null)
+                            editor.putString("deviceToken", deviceToken);
+                    }
+                    if(userType.equals("학생")) {
+                        editor.putInt("userID", object.getInt("student_id"));
+                    }
+                    else if(userType.equals("학부모")) {
+                        editor.putInt("userID", object.getInt("parent_id"));
+                    }
+                    editor.putString("userType", userType);
+                    editor.apply();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+            }
         });
     }
 }

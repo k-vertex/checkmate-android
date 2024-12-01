@@ -21,7 +21,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String token;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fm;
     private FragmentTransaction ft;
@@ -39,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        boolean board = getIntent().getBooleanExtra("게시글 작성 완료", false);
+
+        if(board)
+            Toast.makeText(this, "게시글 작성 완료", Toast.LENGTH_SHORT).show();
 
         frag1 = new BoardActivity();
         frag2 = new ShortsActivity();
@@ -58,23 +62,8 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
         setFreg(0);
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("0", "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        token = task.getResult();
-
-                        // Log and toast
-                        Log.d("0", token);
-                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        Toast.makeText(this, sharedPref.getInt("familyID", 0) + " " + sharedPref.getString("deviceToken", "null") + " " + sharedPref.getInt("userID", -1), Toast.LENGTH_SHORT).show();
     }
 
     private void setFreg(int num) {

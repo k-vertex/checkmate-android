@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,6 +25,7 @@ import androidx.documentfile.provider.DocumentFile;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +43,8 @@ import cz.msebera.android.httpclient.Header;
 public class BoardWriteActivity extends AppCompatActivity {
 
     private TextView writeBoard;
+    private EditText titleView;
+    private EditText contentView;
     private ImageView addVideo;
     private Uri URI;
     private String filePath;
@@ -48,6 +53,11 @@ public class BoardWriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.board_write);
+
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+        titleView = findViewById(R.id.write_board_title);
+        contentView = findViewById(R.id.write_board_content);
 
         pickVideo = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
@@ -73,21 +83,30 @@ public class BoardWriteActivity extends AppCompatActivity {
             AsyncHttpClient client = new AsyncHttpClient();
             String url = "http://emperorchang.store:8888/upload";
             RequestParams params = new RequestParams();
-            try {
-                params.put("file", getContentResolver().openInputStream(URI), "video.mp4");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            params.put("title", titleView.getText().toString());
+            params.put("content", contentView.getText().toString());
+            params.put("writer", sharedPref.getInt("userID", -1));
+            params.put("userType", sharedPref.getString("userType", "null"));
+            if(URI != null) {
+                try {
+                    params.put("file", getContentResolver().openInputStream(URI), "video.mp4");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
 
-            client.post(url, params, new JsonHttpResponseHandler() {
+            client.post(url, params, new TextHttpResponseHandler() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    Intent intent = new Intent(BoardWriteActivity.this, MainActivity.class);
+                    intent.putExtra("게시글 작성 완료", true);
+                    startActivity(intent);
+                    finish();
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                    Toast.makeText(BoardWriteActivity.this, responseString, Toast.LENGTH_SHORT).show();
                 }
             });
         });
