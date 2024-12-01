@@ -94,7 +94,7 @@ public class BoardActivity extends Fragment {
                     }
                 }
                 if(boardAdapter == null) {
-                    boardAdapter = new BoardAdapter(articleList);
+                    boardAdapter = new BoardAdapter(articleList, BoardActivity.this);
                     RecyclerView.LayoutManager manager = new GridLayoutManager(getActivity().getApplicationContext(), 1);
                     RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(manager);

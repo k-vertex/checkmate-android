@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                Toast.makeText(LoginActivity.this, responseString, Toast.LENGTH_SHORT).show();
             }
         });
     }

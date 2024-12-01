@@ -1,5 +1,6 @@
 package com.example.checkmate;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,22 +18,31 @@ import java.util.List;
 public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHolder> {
 
     private List<Article> articleList;
+    private  BoardActivity parent;
+    private View view;
 
-    public BoardAdapter(List<Article> articleList) {
+    public BoardAdapter(List<Article> articleList, BoardActivity parent) {
         this.articleList = articleList;
+        this.parent = parent;
     }
 
     @NonNull
     @Override
     public BoardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.board_cell, parent, false);
+        view = inflater.inflate(R.layout.board_cell, parent, false);
         return new BoardViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BoardViewHolder holder, int position) {
         Article article = articleList.get(position);
+        view.setOnClickListener(view -> {
+            Intent intent = new Intent(parent.getContext(), ArticleActivity.class);
+            intent.putExtra("articleID", article.getArticleID());
+            parent.startActivity(intent);
+            Log.d("test", article.getArticleID() + "");
+        });
         holder.titleView.setText(article.getTitle());
         holder.contentView.setText(article.getContent());
         LocalDateTime articleTime = article.getDateTime();
