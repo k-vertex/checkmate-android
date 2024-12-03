@@ -32,7 +32,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.writerView.setText(comment.getWriterName());
         holder.contentView.setText(comment.getContent());
         LocalDateTime dateTime = comment.getDateTime();
-        holder.timestampView.setText(dateTime.getYear() + "." + dateTime.getMonthValue() + " " + dateTime.getHour() + ":" + dateTime.getMinute());
+        holder.timestampView.setText(dateTime.getYear() + "." + dateTime.getMonthValue() + "." + dateTime.getDayOfMonth() + " " + dateTime.getHour() + ":" + dateTime.getMinute());
     }
 
     @Override

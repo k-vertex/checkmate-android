@@ -1,11 +1,16 @@
 package com.example.checkmate;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +40,9 @@ public class ArticleActivity extends AppCompatActivity {
     private TextView timestampView;
     private TextView titleView;
     private TextView contentView;
+    private TextView commentView;
+    private TextView likeView;
+    private EditText commentEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +53,24 @@ public class ArticleActivity extends AppCompatActivity {
         timestampView = findViewById(R.id.article_timestamp);
         titleView = findViewById(R.id.article_title);
         contentView = findViewById(R.id.article_content);
+        commentView = findViewById(R.id.article_comment);
+        likeView = findViewById(R.id.article_like);
+
+        commentEditText = findViewById(R.id.comment_text);
 
         int articleID = getIntent().getIntExtra("articleID", -1);
         if(articleID > -1) {
             loadArticle(articleID);
-            loadComments(articleID);
-            Log.d("geeg", articleID + "");
+            commentEditText.setOnTouchListener((view, event) -> {
+                final int DRAWABLE_RIGHT = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (commentEditText.getRight() - commentEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        putComment(articleID, commentEditText.getText().toString());
+                        return true;
+                    }
+                }
+                return false;
+            });
         }
     }
 
@@ -66,6 +87,8 @@ public class ArticleActivity extends AppCompatActivity {
                     JSONObject object = response.getJSONObject(0);
                     String title = object.getString("title");
                     String content = object.getString("content");
+                    int commentAmount = object.getInt("cmt_cnt");
+                    int likeAmount = object.getInt("like");
                     String name;
                     if(!object.getString("student_id").equals("null")) {
                         name = object.getString("name");
@@ -77,7 +100,10 @@ public class ArticleActivity extends AppCompatActivity {
                     writerView.setText(name);
                     titleView.setText(title);
                     contentView.setText(content);
-                    timestampView.setText(dateTime.getYear() + "." + dateTime.getMonthValue() + " " + dateTime.getHour() + ":" + dateTime.getMinute());
+                    timestampView.setText(dateTime.getYear() + "." + dateTime.getMonthValue() + "." + dateTime.getDayOfMonth() + " " + dateTime.getHour() + ":" + dateTime.getMinute());
+                    commentView.setText(String.valueOf(commentAmount));
+                    likeView.setText(String.valueOf(likeAmount));
+                    loadComments(articleID);
                 }
                 catch (JSONException e) {
                     throw new RuntimeException(e);
@@ -101,6 +127,7 @@ public class ArticleActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 List<Comment> commentList = new ArrayList<Comment>();
+
                 try {
                     for(int i = 0; i < response.length(); i++) {
                         JSONObject object = response.getJSONObject(i);
@@ -130,11 +157,44 @@ public class ArticleActivity extends AppCompatActivity {
                 RecyclerView recyclerView = findViewById(R.id.article_recycler_view);
                 recyclerView.setLayoutManager(manager);
                 recyclerView.setAdapter(commentAdapter);
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.scrollToPosition(commentAdapter.getItemCount() - 1);
+                    }
+                });
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("실행", responseString);
+            }
+        });
+    }
 
+    private void putComment(int articleID, String content) {
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://emperorchang.store:8888/board/comment";
+        RequestParams params = new RequestParams();
+        params.put("articleID", articleID);
+        params.put("writerID", sharedPref.getInt("userID", -1));
+        params.put("content", content);
+        params.put("userType", sharedPref.getString("userType", "null"));
+
+        client.post(url, params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("te", responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                loadComments(articleID);
+                commentEditText.clearFocus();
+                commentEditText.getText().clear();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(commentEditText.getWindowToken(), 0);
             }
         });
     }

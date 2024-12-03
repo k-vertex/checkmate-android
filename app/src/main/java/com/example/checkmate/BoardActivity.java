@@ -55,7 +55,7 @@ public class BoardActivity extends Fragment {
 
     private void loadArticle() {
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = "http://emperorchang.store:8888/board";
+        String url = "http://emperorchang.store:8888/board/all";
         RequestParams params = new RequestParams();
         if(boardAdapter != null) {
             List<Article> articleList = boardAdapter.getArticleList();
@@ -75,6 +75,8 @@ public class BoardActivity extends Fragment {
                         String videoPath = object.getString("video");
                         String name = object.getString("name");
                         String userType;
+                        int commentAmount = object.getInt(("cmt_cnt"));
+                        int likeAmount = object.getInt("like");
                         int writerID ;
                         if(!object.getString("student_id").equals("null")) {
                             writerID = object.getInt("student_id");
@@ -86,7 +88,7 @@ public class BoardActivity extends Fragment {
                             name = "관계자";
                         }
                         LocalDateTime dateTime = LocalDateTime.parse(object.getString("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                        Article article = new Article(articleID, writerID, userType, title, content, dateTime, name, videoPath);
+                        Article article = new Article(articleID, writerID, userType, title, content, dateTime, name, videoPath, commentAmount, likeAmount);
                         articleList.add(article);
                     }
                     catch (JSONException e) {

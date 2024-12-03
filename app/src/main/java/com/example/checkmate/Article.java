@@ -12,8 +12,10 @@ public class Article {
     private LocalDateTime dateTime;
     private String videoPath;
     private String writerName;
+    private int commentAmount;
+    private int likeAmount;
 
-    public Article(int articleID, int writerID, String userType, String title, String content, LocalDateTime dateTime, String writerName) {
+    public Article(int articleID, int writerID, String userType, String title, String content, LocalDateTime dateTime, String writerName, int commentAmount, int likeAmount) {
         this.articleID = articleID;
         this.writerID = writerID;
         this.userType = userType;
@@ -21,15 +23,33 @@ public class Article {
         this.content = content;
         this.dateTime = dateTime;
         this.writerName = writerName;
+        this.commentAmount = commentAmount;
+        this.likeAmount = likeAmount;
     }
 
-    public Article(int articleID, int writerID, String userType, String title, String content, LocalDateTime dateTime, String writerName, String videoPath) {
-        this(articleID, writerID, userType, title, content, dateTime, writerName);
+    public Article(int articleID, int writerID, String userType, String title, String content, LocalDateTime dateTime, String writerName, String videoPath, int commentAmount, int likeAmount) {
+        this(articleID, writerID, userType, title, content, dateTime, writerName, commentAmount, likeAmount);
         this.videoPath = videoPath;
+    }
+
+    public int getLikeAmount() {
+        return likeAmount;
+    }
+
+    public void setLikeAmount(int likeAmount) {
+        this.likeAmount = likeAmount;
     }
 
     public int getWriterID() {
         return writerID;
+    }
+
+    public int getCommentAmount() {
+        return commentAmount;
+    }
+
+    public void setCommentAmount(int commentAmount) {
+        this.commentAmount = commentAmount;
     }
 
     public void setWriterID(int writerID) {

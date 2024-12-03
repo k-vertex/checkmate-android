@@ -60,6 +60,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         }
         holder.timestampView.setText(timestampStr);
         holder.writerView.setText(article.getWriterName());
+        holder.commentView.setText(String.valueOf(article.getCommentAmount()));
+        holder.likeView.setText(String.valueOf(article.getLikeAmount()));
     }
 
     @Override
